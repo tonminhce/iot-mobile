@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -6,15 +6,23 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Alert
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "./LoginScreenStyles";
+import { AuthContext } from "../../store/auth-context";
+import { UserContext } from "../../store/userContext";
+import { login } from "../../services/auth.service";
+import { create } from "d3";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const authCtx = useContext(AuthContext);
+  const userDataCtx = useContext(UserContext);
   const navigation = useNavigation();
 
   const handleShowPassword = () => {
@@ -28,6 +36,30 @@ const LoginScreen = () => {
   const getForgotPasswordHandler = () => {
     navigation.replace("ForgotPassword");
   };
+
+  const loginSubmitHandler = async () => {
+    if (!email.includes("@") || !(password.length >= 5)) {
+      return Alert.alert(
+        "Invalid input",
+        "Please check your entered credentials."
+      );
+    }
+
+    setIsAuthenticating(true);
+    try {
+      const { id, token, name, createdAt } = await login(email, password);
+      authCtx.onSuccessAuth(token);
+      userDataCtx.onSuccessAuth(id, name, email, createdAt);
+    } catch (err) {
+      console.log(err);
+      Alert.alert(
+        "Authentication failed",
+        "Could not login. Please check your credentials or try again later."
+      );
+      setIsAuthenticating(false);
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -66,7 +98,7 @@ const LoginScreen = () => {
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
         </TouchableOpacity>
       </View> */}
-      <TouchableOpacity style={styles.loginButton}>
+      <TouchableOpacity style={styles.loginButton} onPress={loginSubmitHandler}>
         <Text style={styles.loginButtonText}>Log in</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={getSignupHandler}>
@@ -75,6 +107,5 @@ const LoginScreen = () => {
     </KeyboardAvoidingView>
   );
 };
-
 
 export default LoginScreen;

@@ -2,14 +2,19 @@ import { StatusBar } from "expo-status-bar";
 import { Image, ScrollView, Text, View } from "react-native";
 import FlatButton from "../../components/UI/FlatButton";
 import DeviceController from "../../components/Home/DeviceController";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./HomeScreenStyles";
+import { UserContext } from "../../store/userContext";
+import { AuthContext } from "../../store/auth-context";
+
 const avatarPlaceholderImg = require("../../assets/images/avatar-placeholder.jpg");
+
+
 
 function HomeScreen() {
   const [timeString, setTimeString] = useState("");
-
+  const { name } = useContext(UserContext);
   const getLiveTime = () => {
     const date = new Date();
     const options = {
@@ -42,7 +47,9 @@ function HomeScreen() {
         <View style={styles.welcomeHeading}>
           <View style={styles.headingTextContainer}>
             <Text style={styles.timestamp}>{timeString}</Text>
-            <Text style={styles.welcomeText}>Welcome, Minh Dep Trai!</Text>
+            <Text style={[styles.welcomeText, { fontWeight: 800 }]}>
+              Welcome, {name}
+            </Text>
           </View>
           <Image source={avatarPlaceholderImg} style={styles.avatarImg} />
         </View>

@@ -1,11 +1,9 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeStack from "./HomePage/HomeStack";
-import StatisticScreen from "./StatisticPage/StatisticScreen";
-import SettingsScreen from "./SettingsPage/SettingsScreen";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import HomeScreen from "./HomePage/HomeScreen";
 import SettingsStack from "./SettingsPage/SettingsStack";
+import StatisticStack from "./StatisticPage/StatisticStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -35,7 +33,7 @@ export default function AuthenticatedStack() {
       />
       <Tab.Screen
         name="Statistic"
-        component={StatisticScreen}
+        component={StatisticStack}
         options={{ headerShown: false }}
       />
       <Tab.Screen

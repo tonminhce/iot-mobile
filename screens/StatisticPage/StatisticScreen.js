@@ -4,29 +4,36 @@ import { Colors } from "../../constants/colors";
 
 const { width, height } = Dimensions.get("window");
 
-const DataBox = ({ label, value }) => (
+const DataBox = ({ label, value, onPress }) => (
   <TouchableOpacity
     style={styles.dataContainer}
-    onPress={() => Alert.alert(`${label} ${value}`)}
+    onPress={onPress}
   >
     <Text style={styles.dataText}>{label} {value}</Text>
   </TouchableOpacity>
 );
 
-function AnalyticScreen({ ec, temperature, moisture, illuminance, soilTemperature, soilHumidity }) {
+function AnalyticScreen({ navigation, airTemperature, airHumid, illuminance, soilTemperature, soilHumidity, soilEC }) {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Statistics</Text>
       <Text style={styles.descriptionText}>
         Here are your current environment readings analytics:
       </Text>
-      <DataBox label="Air Temperature" value={ec} />
-      <DataBox label="Air Humidity" value={temperature} />
-      <DataBox label="Illuminance" value={illuminance} />
-      <DataBox label="Soil Temperature" value={soilTemperature} />
-      <DataBox label="Soil Humidity" value={soilHumidity} />
-      <DataBox label="Soil EC" value={soilHumidity} />
-
+      <DataBox label="Air Temperature" value={airTemperature}
+        onPress={() => navigation.navigate('AirTemperatureStatisticScreen')} />
+      <DataBox
+        label="Air Humidity"
+        value={airHumid}
+        onPress={() => navigation.navigate('AirHumidityStatisticScreen')}
+      />
+      <DataBox label="Illuminance" value={illuminance} 
+      onPress={() => navigation.navigate('IlluminanceStatisticScreen')}
+      />
+      <DataBox label="Soil Temperature" value={soilTemperature} 
+        onPress={() => navigation.navigate('SoilTemperatureStatisticScreen')}/>
+      <DataBox label="Soil Humidity" value={soilHumidity} onPress={() => navigation.navigate('SoilHumidityStatisticScreen')} />
+      <DataBox label="Soil EC" value={soilHumidity} onPress={() => navigation.navigate('SoilECStatisticScreen')} />
     </View>
   );
 }

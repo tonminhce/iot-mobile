@@ -1,21 +1,29 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import { View, Text } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import styles from "./SensorStyles";
-
-// Fake data for demonstration purposes
-const SENSOR_DATA = {
-  battery: "80%",
-  AirHumidity: "50%",
-  AirTemperature: "20°C",
-  Alarm: "No Alarm",
-  updateTime: new Date().toLocaleTimeString(), // Shows current time as last update time
-};
+import { SensorContext } from "../../store/sensorContext";
 
 const TemperatureHumidityScreen = () => {
+
+  const { sensor2DataArray } = useContext(SensorContext);
+  console.log(sensor2DataArray);
+  const sensor2Data = {
+    AirHumidity: sensor2DataArray[0],
+    AirTemperature: sensor2DataArray[1],
+    Alarm: sensor2DataArray[2],
+    Battery: sensor2DataArray[3],
+  }
+  const sensorUnits = {
+    Battery: "V",
+    AirHumidity: "%",
+    AirTemperature: "°C",
+
+  };
+
   const getIconName = useCallback((key) => {
     switch (key) {
-      case "battery":
+      case "Battery":
         return "battery-charging";
       case "AirHumidity":
         return "water";
@@ -33,19 +41,23 @@ const beautifyKey = (key) => {
     .replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
 };
 
-  const renderSensorData = useCallback(() => {
-    return Object.keys(SENSOR_DATA).map((key, index) => (
-      <View style={styles.sensorCard} key={index}>
-        <Icon name={getIconName(key)} style={styles.iconStyle} />
-        <View style={styles.sensorInfoContainer}>
-          <Text style={styles.sensorKey}>
-            {beautifyKey(key)}
-          </Text>
-          <Text style={styles.sensorValue}>{SENSOR_DATA[key]}</Text>
+  const renderSensor2Data = () => {
+    return Object.keys(sensor2Data).map((key) => {
+      const value = typeof sensor2Data[key] === 'number' ? sensor2Data[key].toFixed(2) : sensor2Data[key];
+      const unit = sensorUnits[key] || '';
+      return (
+        <View style={styles.sensorCard} key={key}>
+          <Icon name={getIconName(key)} style={styles.iconStyle} />
+          <View style={styles.sensorInfoContainer}>
+            <Text style={styles.sensorKey}>
+              {key}
+            </Text>
+            <Text style={styles.sensorValue}>{`${value} ${unit}`}</Text>
+          </View>
         </View>
-      </View>
-    ));
-  }, [getIconName]);
+      );
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -53,7 +65,7 @@ const beautifyKey = (key) => {
         <View style={styles.welcomeHeading}>
           <Text style={styles.welcomeText}>Sensor 2 Data</Text>
         </View>
-        <View style={styles.sensorsContainer}>{renderSensorData()}</View>
+        <View style={styles.sensorsContainer}>{renderSensor2Data()}</View>
       </View>
     </View>
   );

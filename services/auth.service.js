@@ -1,29 +1,35 @@
 const { default: axios } = require("axios");
 
-const BACKEND_HOST = "http://dat2409.online/api";
+const BACKEND_HOST = "http://10.0.2.2:3000";
 async function login(email, password) {
-  const endpoint = "/auth/login";
+  const endpoint = "/auth/signIn";
   const url = BACKEND_HOST + endpoint;
   const { data } = await axios.post(url, { email, password });
-  console.log(data.metadata.token);
+  console.log(data.metadata);
+  console.log(data.metadata.name);
+  console.log(data.metadata.createdAt);
   return {
-    id: data.metadata.id,
+    id: data.metadata.userId,
     token: data.metadata.token,
-    username: data.metadata.name,
+    name: data.metadata.name,
+    email: data.metadata.email,
+    createdAt: data.metadata.createdAt
   };
 }
 
 async function register(name, email, password) {
-  const endpoint = "/auth/register";
+  const endpoint = "/auth/signUp";
   const url = BACKEND_HOST + endpoint;
   const { data } = await axios.post(url, { name, email, password });
   return {
     id: data.metadata.id,
     token: data.metadata.token,
-    username: data.metadata.name,
+    name: data.metadata.name,
+    email: data.metadata.email,
+    createdAt: data.metadata.createdAt
   };
 }
 
-function logout() {}
+function logout() { }
 
 export { login, register };

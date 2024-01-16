@@ -4,10 +4,10 @@ import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext({
   token: "",
-  username: "",
+  name: "",
   isAuthenticated: false,
-  onSuccessAuth: () => {},
-  onLogout: () => {},
+  onSuccessAuth: () => { },
+  onLogout: () => { },
 });
 
 function AuthContextProvider({ children }) {

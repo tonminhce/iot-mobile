@@ -1,17 +1,20 @@
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
-import React, { useState, useEffect, createContext } from "react";
+import React, { useContext, useState, useEffect, createContext } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import AuthStack from "./screens/AuthStack";
+import AuthContextProvider, { AuthContext } from './store/auth-context';
 import AuthenticatedStack from "./screens/AuthenticatedStack";
-
-
+import { UserContextProvider } from './store/userContext';
+import { SensorProvider } from "./store/sensorContext";
 function Navigation() {
+  const authCtx = useContext(AuthContext);
+
   return (
     <NavigationContainer>
-      {/* <AuthStack /> */}
-      <AuthenticatedStack />
+      {!authCtx.isAuthenticated && <AuthStack />}
+      {authCtx.isAuthenticated && <AuthenticatedStack />}
     </NavigationContainer>
   );
 }
@@ -28,8 +31,13 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <StatusBar style="auto" />
-
-      <Navigation />
-    </SafeAreaProvider>
+      <AuthContextProvider>
+        <UserContextProvider>
+          <SensorProvider>
+            <Navigation />
+          </SensorProvider>
+        </UserContextProvider>
+      </AuthContextProvider>
+    </SafeAreaProvider >
   );
 }

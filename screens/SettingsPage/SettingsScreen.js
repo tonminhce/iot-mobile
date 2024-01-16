@@ -1,3 +1,4 @@
+import { create } from "d3";
 import React, { useState } from "react";
 import {
   SafeAreaView,
@@ -7,7 +8,10 @@ import {
   View,
   Dimensions,
 } from "react-native";
+import { useContext } from 'react';
+import { UserContext } from '../../store/userContext';
 import { List, Switch } from "react-native-paper";
+
 
 const { width, height } = Dimensions.get("window");
 
@@ -16,7 +20,7 @@ const CustomListItem = ({ title, icon, onPress, children }) => (
     <List.Item
       title={title}
       titleStyle={styles.listItemTitle}
-      left={() => <List.Icon icon={icon} color="blue" />}
+      left={() => <List.Icon icon={icon} color="black" />} // Updated icon color to black
       onPress={onPress}
       right={() => children}
     />
@@ -25,14 +29,14 @@ const CustomListItem = ({ title, icon, onPress, children }) => (
 
 const SettingsScreen = ({ navigation }) => {
   const [isSwitchOn, setIsSwitchOn] = useState(false);
-
+  const { name, email, createdAt } = useContext(UserContext);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
   const handleProfilePress = () =>
     navigation.navigate('ProfileScreen', {
-      email: 'minh@gmail.com',
-      name: 'Minh dep trai',
-      creationTime: '2023-12-01'
+      email: email,
+      name: name,
+      creationTime: createdAt,
     });
 
   const handleChangePassword = () => Alert.alert("Change password clicked");
@@ -87,7 +91,6 @@ const styles = StyleSheet.create({
     paddingTop: width * 0.05,
     fontSize: width * 0.06,
     fontWeight: "bold",
-
   },
   listSection: {
     marginTop: height * 0.01,

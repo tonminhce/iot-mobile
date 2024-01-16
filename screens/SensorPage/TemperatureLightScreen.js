@@ -1,21 +1,27 @@
-import React, { useCallback } from "react";
+import React, { useContext } from "react";
 import { View, Text } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import styles from "./SensorStyles";
-
-// Fake data for demonstration purposes
-const SENSOR_DATA = {
-  battery: "80%",
-  Illuminance: "200 Lux",
-  AirTemperature: "31.4°C",
-  updateTime: new Date().toLocaleTimeString(), // Shows current time as last update time
-
-};
+import { SensorContext } from "../../store/sensorContext";
 
 const TemperatureLightScreen = () => {
-  const getIconName = useCallback((key) => {
+  const { sensor3DataArray } = useContext(SensorContext);
+  console.log(sensor3DataArray);
+  const sensor1Data = {
+    Illuminance: sensor3DataArray[0],
+    AirTemperature: sensor3DataArray[1],
+    Battery: sensor3DataArray[2],
+  };
+
+  const sensorUnits = {
+    Battery: "V",
+    Illuminance: "Lux",
+    AirTemperature: "°C",
+  };
+
+  const getIconName = (key) => {
     switch (key) {
-      case "battery":
+      case "Battery":
         return "battery-charging";
       case "Illuminance":
         return "sunny-outline";
@@ -24,26 +30,25 @@ const TemperatureLightScreen = () => {
       default:
         return "time-outline";
     }
-  }, []);
-
-  const beautifyKey = (key) => {
-    return key
-      .replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
   };
 
-  const renderSensorData = useCallback(() => {
-    return Object.keys(SENSOR_DATA).map((key, index) => (
-      <View style={styles.sensorCard} key={index}>
-        <Icon name={getIconName(key)} style={styles.iconStyle} />
-        <View style={styles.sensorInfoContainer}>
-          <Text style={styles.sensorKey}>
-            {beautifyKey(key)}
-          </Text>
-          <Text style={styles.sensorValue}>{SENSOR_DATA[key]}</Text>
+  const renderSensor1Data = () => {
+    return Object.keys(sensor1Data).map((key) => {
+      const value = typeof sensor1Data[key] === 'number' ? sensor1Data[key].toFixed(2) : sensor1Data[key];
+      const unit = sensorUnits[key] || ''; 
+      return (
+        <View style={styles.sensorCard} key={key}>
+          <Icon name={getIconName(key)} style={styles.iconStyle} />
+          <View style={styles.sensorInfoContainer}>
+            <Text style={styles.sensorKey}>
+              {key}
+            </Text>
+            <Text style={styles.sensorValue}>{`${value} ${unit}`}</Text>
+          </View>
         </View>
-      </View>
-    ));
-  }, [getIconName]);
+      );
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -51,7 +56,7 @@ const TemperatureLightScreen = () => {
         <View style={styles.welcomeHeading}>
           <Text style={styles.welcomeText}>Sensor 3 Data</Text>
         </View>
-        <View style={styles.sensorsContainer}>{renderSensorData()}</View>
+        <View style={styles.sensorsContainer}>{renderSensor1Data()}</View>
       </View>
     </View>
   );
